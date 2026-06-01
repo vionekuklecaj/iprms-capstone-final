@@ -1,0 +1,19 @@
+{
+  "pr_id": "PR-SOLE-001",
+  "requestor_name": "Emily Davis",
+  "department": "Engineering",
+  "cost_center": "IT001",
+  "business_justification": "Only supplier capable of supporting existing proprietary engineering platform",
+  "vendor_name": "Dell Partner",
+  "sole_source_requested": true,
+  "sole_source_justification": "Existing proprietary platform requires this supplier for compatibility and support continuity",
+  "line_items": [
+    {
+      "item_id": "LAP-001",
+      "description": "Dell Latitude 5550",
+      "quantity": 4,
+      "unit_price": 1200,
+      "currency": "USD"
+    }
+  ]
+}

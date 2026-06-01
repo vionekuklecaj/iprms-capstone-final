@@ -1,0 +1,21 @@
+{
+  "pr_id": "PR-EMERGENCY-001",
+  "requestor_name": "Nina Patel",
+  "department": "IT",
+  "cost_center": "IT001",
+  "business_justification": "Emergency replacement needed due to critical service outage",
+  "vendor_name": "Office Supplies Co",
+  "gl_account": "6300",
+  "spend_type": "OPEX",
+  "procurement_type": "EMERGENCY",
+  "emergency_reason": "Critical workstation accessories failed during business continuity incident",
+  "line_items": [
+    {
+      "item_id": "MOU-001",
+      "description": "Wireless Mouse",
+      "quantity": 10,
+      "unit_price": 25,
+      "currency": "USD"
+    }
+  ]
+}

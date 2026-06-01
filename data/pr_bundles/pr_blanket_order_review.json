@@ -1,0 +1,22 @@
+{
+  "pr_id": "PR-BLANKET-001",
+  "requestor_name": "Laura Evans",
+  "department": "Operations",
+  "cost_center": "OPS001",
+  "business_justification": "Recurring office accessories purchase for operational support",
+  "vendor_name": "Office Supplies Co",
+  "gl_account": "6300",
+  "spend_type": "OPEX",
+  "procurement_type": "BLANKET_ORDER",
+  "blanket_order_duration_months": null,
+  "blanket_order_release_limit": null,
+  "line_items": [
+    {
+      "item_id": "KEY-001",
+      "description": "Wireless Keyboard",
+      "quantity": 10,
+      "unit_price": 35,
+      "currency": "USD"
+    }
+  ]
+}

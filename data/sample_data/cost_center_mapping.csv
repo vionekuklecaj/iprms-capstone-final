@@ -1,0 +1,6 @@
+cost_center,department,approver_role,finance_owner,region
+IT001,IT,IT Manager,Finance Partner IT,North America
+HR001,HR,HR Manager,Finance Partner HR,North America
+FIN001,Finance,Finance Manager,Finance Controller,North America
+OPS001,Operations,Operations Manager,Finance Partner Operations,North America
+ENG001,Engineering,Engineering Manager,Finance Partner Engineering,North America

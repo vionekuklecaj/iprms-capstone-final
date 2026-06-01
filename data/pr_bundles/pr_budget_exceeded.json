@@ -1,0 +1,17 @@
+{
+  "pr_id": "PR-004",
+  "requestor_name": "John Smith",
+  "department": "IT",
+  "cost_center": "IT001",
+  "business_justification": "Large laptop rollout",
+  "vendor_name": "Dell Partner",
+  "line_items": [
+    {
+      "item_id": "LAP-001",
+      "description": "Dell Latitude 5550",
+      "quantity": 50,
+      "unit_price": 1200,
+      "currency": "USD"
+    }
+  ]
+}

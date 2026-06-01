@@ -1,0 +1,24 @@
+{
+  "pr_id": "PR-EMERGENCY-SOLE-001",
+  "requestor_name": "Nina Patel",
+  "department": "IT",
+  "cost_center": "IT001",
+  "business_justification": "Emergency sole source purchase required because only supplier can restore critical service outage",
+  "vendor_name": "Dell Partner",
+  "gl_account": "6100",
+  "spend_type": "OPEX",
+  "procurement_type": "EMERGENCY",
+  "emergency_reason": "Critical service outage affecting business continuity",
+  "sole_source_requested": true,
+  "sole_source_justification": "Only this supplier can provide immediate compatible replacement equipment for the existing proprietary platform",
+  "quotes_received": 0,
+  "line_items": [
+    {
+      "item_id": "LAP-001",
+      "description": "Dell Latitude 5550",
+      "quantity": 2,
+      "unit_price": 1200,
+      "currency": "USD"
+    }
+  ]
+}

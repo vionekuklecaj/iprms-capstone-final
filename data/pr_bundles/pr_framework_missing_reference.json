@@ -1,0 +1,21 @@
+{
+  "pr_id": "PR-FRAMEWORK-001",
+  "requestor_name": "Daniel Wong",
+  "department": "IT",
+  "cost_center": "IT001",
+  "business_justification": "Purchase under existing supplier framework agreement",
+  "vendor_name": "Office Supplies Co",
+  "gl_account": "6300",
+  "spend_type": "OPEX",
+  "procurement_type": "FRAMEWORK_AGREEMENT",
+  "contract_reference": null,
+  "line_items": [
+    {
+      "item_id": "KEY-001",
+      "description": "Wireless Keyboard",
+      "quantity": 5,
+      "unit_price": 35,
+      "currency": "USD"
+    }
+  ]
+}

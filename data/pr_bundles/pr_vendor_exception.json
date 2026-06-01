@@ -1,0 +1,17 @@
+{
+  "pr_id": "PR-003",
+  "requestor_name": "John Smith",
+  "department": "IT",
+  "cost_center": "IT001",
+  "business_justification": "Laptop purchase",
+  "vendor_name": "Random Shop",
+  "line_items": [
+    {
+      "item_id": "LAP-001",
+      "description": "Dell Latitude 5550",
+      "quantity": 3,
+      "unit_price": 1200,
+      "currency": "USD"
+    }
+  ]
+}

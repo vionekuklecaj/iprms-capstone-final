@@ -1,0 +1,20 @@
+{
+  "pr_id": "PR-MULTICURRENCY-001",
+  "requestor_name": "Amelia Brown",
+  "department": "IT",
+  "cost_center": "IT001",
+  "business_justification": "International equipment purchase requiring currency review",
+  "vendor_name": "Global IT Supplies",
+  "gl_account": "6100",
+  "spend_type": "OPEX",
+  "procurement_type": "STANDARD",
+  "line_items": [
+    {
+      "item_id": "DOC-001",
+      "description": "Laptop Docking Station",
+      "quantity": 3,
+      "unit_price": 180,
+      "currency": "EUR"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+item_id,description,approved_vendor,unit_price,currency
+LAP-001,Dell Latitude 5550,Dell Partner,1200,USD
+LAP-002,HP EliteBook 860,HP Enterprise,1350,USD
+LAP-003,Lenovo ThinkPad T14,Lenovo Business Partner,1250,USD
+LAP-004,MacBook Pro 14,Apple Enterprise Reseller,2200,USD
+MON-001,Dell 24 inch Monitor,Dell Partner,250,USD
+MON-002,HP 27 inch Monitor,HP Enterprise,310,USD
+KEY-001,Wireless Keyboard,Office Supplies Co,35,USD
+MOU-001,Wireless Mouse,Office Supplies Co,25,USD
+DOC-001,Laptop Docking Station,Global IT Supplies,180,USD
+HEAD-001,Noise Cancelling Headset,Global IT Supplies,150,USD

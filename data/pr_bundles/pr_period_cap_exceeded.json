@@ -1,0 +1,19 @@
+{
+  "pr_id": "PR-PERIOD-001",
+  "requestor_name": "John Smith",
+  "department": "IT",
+  "cost_center": "IT001",
+  "business_justification": "Large equipment purchase within annual budget but above period cap",
+  "vendor_name": "Dell Partner",
+  "gl_account": "6100",
+  "spend_type": "OPEX",
+  "line_items": [
+    {
+      "item_id": "LAP-001",
+      "description": "Dell Latitude 5550",
+      "quantity": 27,
+      "unit_price": 1200,
+      "currency": "USD"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "pr_id": "PR-LOW-CONFIDENCE-001",
+  "requestor_name": "Maya Green",
+  "department": "IT",
+  "cost_center": "IT001",
+  "business_justification": "General equipment needed for team setup",
+  "vendor_name": "Dell Partner",
+  "gl_account": "6100",
+  "spend_type": "OPEX",
+  "quotes_received": 0,
+  "line_items": [
+    {
+      "item_id": "UNK-001",
+      "description": "IT equipment",
+      "quantity": 1,
+      "unit_price": 900,
+      "currency": "USD"
+    }
+  ]
+}

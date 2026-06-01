@@ -1,0 +1,20 @@
+{
+  "pr_id": "PR-THREE-PR-001",
+  "requestor_name": "John Smith",
+  "department": "IT",
+  "cost_center": "IT001",
+  "business_justification": "Additional laptop purchase related to same departmental hardware refresh",
+  "vendor_name": "Dell Partner",
+  "gl_account": "6100",
+  "spend_type": "OPEX",
+  "quotes_received": 3,
+  "line_items": [
+    {
+      "item_id": "LAP-001",
+      "description": "Dell Latitude 5550",
+      "quantity": 2,
+      "unit_price": 1200,
+      "currency": "USD"
+    }
+  ]
+}

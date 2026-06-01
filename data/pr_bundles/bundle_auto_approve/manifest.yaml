@@ -1,0 +1,23 @@
+bundle_id: BUNDLE-AUTO-APPROVE-001
+scenario_name: Standard IT consumables from approved vendor within budget
+description: Clean requisition using approved vendor and available budget. Expected to auto-approve.
+
+input:
+  requisition_file: ../pr_auto_approve.json
+  input_type: json
+
+master_data:
+  
+  budget_snapshot: ../../sample_data/budget_snapshot.csv
+  approved_vendors: ../../sample_data/approved_vendors.csv
+  catalogue_pricing: ../../sample_data/catalogue_pricing.csv
+  cost_center_mapping: ../../sample_data/cost_center_mapping.csv
+  pr_history: ../../sample_data/pr_history.csv
+
+policy:
+  policy_file: ../../../policies/policy.yaml
+
+expected_result:
+  final_decision: APPROVED
+  required_approver: Auto Approval
+  expected_exceptions: []

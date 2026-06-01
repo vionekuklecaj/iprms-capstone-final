@@ -1,0 +1,8 @@
+cost_center,department,gl_account,gl_account_name,available_budget,period,period_cap,period_spend_to_date,capex_threshold,currency
+IT001,IT,6100,IT Hardware,50000,2026-Q2,40000,8000,25000,USD
+IT001,IT,6200,Software Licenses,30000,2026-Q2,25000,4000,20000,USD
+IT001,IT,6300,Office Supplies,10000,2026-Q2,8000,500,10000,USD
+HR001,HR,6300,Office Supplies,10000,2026-Q2,7000,1500,10000,USD
+FIN001,Finance,6300,Office Supplies,25000,2026-Q2,12000,3000,15000,USD
+OPS001,Operations,6300,Office Supplies,15000,2026-Q2,10000,2000,15000,USD
+ENG001,Engineering,6100,Engineering Hardware,45000,2026-Q2,35000,6000,25000,USD

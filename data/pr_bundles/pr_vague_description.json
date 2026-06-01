@@ -1,0 +1,17 @@
+{
+  "pr_id": "PR-VAGUE-001",
+  "requestor_name": "Alex Brown",
+  "department": "IT",
+  "cost_center": "IT001",
+  "business_justification": "General equipment request",
+  "vendor_name": "Dell Partner",
+  "line_items": [
+    {
+      "item_id": "UNK-001",
+      "description": "IT equipment",
+      "quantity": 1,
+      "unit_price": 5000,
+      "currency": "USD"
+    }
+  ]
+}

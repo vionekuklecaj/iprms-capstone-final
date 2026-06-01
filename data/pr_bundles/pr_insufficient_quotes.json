@@ -1,0 +1,20 @@
+{
+  "pr_id": "PR-QUOTES-001",
+  "requestor_name": "John Smith",
+  "department": "IT",
+  "cost_center": "IT001",
+  "business_justification": "Laptop refresh requiring competitive bidding",
+  "vendor_name": "Dell Partner",
+  "gl_account": "6100",
+  "spend_type": "OPEX",
+  "quotes_received": 1,
+  "line_items": [
+    {
+        "item_id": "MON-001",
+        "description": "Dell 24 inch Monitor",
+        "quantity": 50,
+        "unit_price": 250,
+        "currency": "USD"
+    }
+  ]
+}

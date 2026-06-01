@@ -1,0 +1,17 @@
+{
+  "pr_id": "PR-AUTO-001",
+  "requestor_name": "Jane Miller",
+  "department": "HR",
+  "cost_center": "HR001",
+  "business_justification": "Standard keyboard and mouse replacement for new employee onboarding",
+  "vendor_name": "Office Supplies Co",
+  "line_items": [
+    {
+      "item_id": "KEY-001",
+      "description": "Wireless Keyboard",
+      "quantity": 2,
+      "unit_price": 35,
+      "currency": "USD"
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+approval_thresholds:
+  auto_approval_limit: 5000
+  manager_limit: 20000
+  director_limit: 50000
+
+bid_threshold:
+  amount: 10000
+  required_quotes: 3
+
+vendor_policy:
+  approved_vendor_required: true
+
+budget_policy:
+  block_if_budget_exceeded: true
+
+tolerance_percentages:
+  catalogue_price_tolerance_percent: 10
+  budget_overrun_tolerance_percent: 0
+  currency_variance_tolerance_percent: 5
+
+compliance_rules:
+  require_budget_validation: true
+  require_vendor_validation: true
+  require_policy_exception_review: true
+  require_approval_packet: true
+  require_audit_log: true
+  block_po_generation_when_review_required: true
+
+privacy_rules:
+  mask_requestor_name_in_external_exports: true
+  exclude_personal_data_from_po_draft: true
+  retain_audit_logs: true
+  store_sensitive_fields: false
+  include_only_business_fields_in_po: true
+
+regional_policies:
+  North America:
+    currency: USD
+    bid_threshold_amount: 10000
+    required_quotes: 3
+    privacy_level: STANDARD
+    approval_workflow: DEFAULT
+
+  Europe:
+    currency: EUR
+    bid_threshold_amount: 8000
+    required_quotes: 3
+    privacy_level: GDPR
+    approval_workflow: REGIONAL_FINANCE_REVIEW
+
+  United Kingdom:
+    currency: GBP
+    bid_threshold_amount: 9000
+    required_quotes: 3
+    privacy_level: UK_GDPR
+    approval_workflow: REGIONAL_FINANCE_REVIEW
+
+  Kosovo:
+    currency: EUR
+    bid_threshold_amount: 7000
+    required_quotes: 2
+    privacy_level: GDPR_ALIGNED
+    approval_workflow: LOCAL_MANAGER_REVIEW

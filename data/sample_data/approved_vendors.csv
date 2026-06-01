@@ -1,0 +1,9 @@
+vendor_id,vendor_name,status,risk_level
+V001,Dell Partner,APPROVED,LOW
+V002,HP Enterprise,APPROVED,LOW
+V003,Random Shop,NOT_APPROVED,HIGH
+V004,Office Supplies Co,APPROVED,LOW
+V005,Lenovo Business Partner,APPROVED,LOW
+V006,Apple Enterprise Reseller,APPROVED,MEDIUM
+V007,Tech Warehouse Outlet,NOT_APPROVED,HIGH
+V008,Global IT Supplies,APPROVED,LOW
