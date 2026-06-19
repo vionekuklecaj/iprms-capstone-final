@@ -283,7 +283,7 @@ def save_run_artifacts(
         anomaly_result=anomaly_result
     )
 
-    # Persist to SQLite audit database
+    
     try:
         from app.services.audit_db import log_pipeline_run
         log_pipeline_run(
@@ -298,21 +298,21 @@ def save_run_artifacts(
             anomaly_result=anomaly_result,
         )
     except Exception:
-        pass  # Audit DB failure must never break the pipeline
+        pass  
 
-    # Update pr_history.csv so anomaly detection has live data
+    
     try:
         from app.services.data_loader import append_to_pr_history
         append_to_pr_history(context_packet.get("pr", {}), final_result, vendor_result)
     except Exception:
-        pass  # Never break the pipeline
+        pass  
 
-    # Auto-cleanup old run folders (keep last 50)
+    
     try:
         from app.services.runs_manager import cleanup_old_runs
         cleanup_old_runs()
     except Exception:
-        pass  # Never break the pipeline
+        pass  
 
     return {
         "run_id": run_id,

@@ -2,10 +2,7 @@ from app.schemas.context import ContextPacket
 
 
 class BudgetAgent:
-    """
-    Agent C - Budget Validation
-
-    """
+    
 
     def run(self, context: ContextPacket) -> dict:
         requested_amount = context.pr.total_amount

@@ -111,11 +111,7 @@ def load_policy() -> dict:
 
 
 def load_pr_history() -> list[dict]:
-    """
-    Load PR history from the CSV file.
-    Passes through the 'created_date' column when present so the
-    AnomalyAgent can apply its time-window filter correctly.
-    """
+    
     file_path = BASE_DIR / "data" / "sample_data" / "pr_history.csv"
     history = []
 
@@ -143,11 +139,7 @@ def load_pr_history() -> list[dict]:
 
 
 def load_pr_history_from_runs() -> list[dict]:
-    """
-    Load PR history from past pipeline run folders.
-    Derives a timestamp from the run folder name (format: PR-ID_YYYYMMDD_HHMMSS)
-    so the AnomalyAgent can include these records in its time-window filter.
-    """
+    
     from datetime import timezone
     import re as _re
 
@@ -185,7 +177,7 @@ def load_pr_history_from_runs() -> list[dict]:
             for item in pr_data["line_items"]
         )
 
-        # Derive timestamp from folder name (e.g. PR-001_20260617_210000)
+        
         created_date = None
         ts_match = _ts_pattern.search(run_folder.name)
         if ts_match:
@@ -239,10 +231,7 @@ def load_cost_center_authority(
     return None
 
 def append_to_pr_history(pr_data: dict, final_result: dict, vendor_result: dict) -> None:
-    """
-    Write a completed pipeline run back into pr_history.csv
-    so split-order detection has fresh data on the next run.
-    """
+    
     import csv
     from datetime import datetime, timezone
 

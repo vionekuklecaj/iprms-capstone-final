@@ -1,7 +1,3 @@
-"""
-Anomaly Agent - Split Order Detection
-
-"""
 
 from __future__ import annotations
 
@@ -27,16 +23,16 @@ class AnomalyAgent:
         runs_history = load_pr_history_from_runs() or []
         csv_history_raw = load_pr_history() or []
 
-        # Only include CSV rows that carry a timestamp
+        
         csv_history = [r for r in csv_history_raw if r.get("created_date")]
 
-        # Merge, de-duplicating by pr_id (runs take priority)
+        
         history_by_id: dict[str, dict] = {r["pr_id"]: r for r in csv_history}
         for record in runs_history:
             history_by_id[record["pr_id"]] = record
         all_history = list(history_by_id.values())
 
-        # Apply time-window filter
+        
         cutoff = datetime.now(timezone.utc) - timedelta(days=LOOKBACK_DAYS)
         windowed: list[dict] = []
 
@@ -66,21 +62,21 @@ class AnomalyAgent:
 
         current_item = current_pr.line_items[0].item_id if current_pr.line_items else None
         current_vendor = current_pr.vendor_name
-        current_cost_center = current_pr.cost_center  # tighter than department
+        current_cost_center = current_pr.cost_center  
         current_amount = current_pr.total_amount
 
         matching_records: list[dict] = []
 
         for record in windowed:
-            # Skip self (same pr_id seen in history from a prior run)
+            
             if record["pr_id"] == current_pr.pr_id:
                 continue
 
-            # Must match on cost_center (if available), vendor, and item
+            
             record_cc = record.get("cost_center") or record.get("department")
             current_match_key = record.get("cost_center") or current_cost_center
 
-            # Prefer cost_center match; fall back to department match
+            
             if record.get("cost_center"):
                 cc_match = record["cost_center"] == current_cost_center
             else:

@@ -1,20 +1,4 @@
-"""
-IPRMS Streamlit UI v3
-======================
-All improvements from v2 plus:
 
-NEW in v3:
-  - Login system: users (run + view + download) vs admins (+ edit + user mgmt)
-  - Auto-cleanup of runs/ (keeps last 50, warns when near limit)
-  - Input validation on web form (empty PR ID, zero quantity, etc.)
-  - OCR post-correction step with corrections displayed
-  - Re-run button on past scenarios from Audit Dashboard
-  - pr_history.csv updated live after each run
-  - Export buttons on Audit Dashboard (CSV)
-  - LLM-powered flexible PDF parsing (any layout)
-  - API key info shown to admin
-  - Admin panel: edit master data (vendors, budget, catalog), manage users
-"""
 
 import json
 import shutil
@@ -51,9 +35,9 @@ st.set_page_config(
 BASE_DIR = Path(__file__).resolve().parent
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+
 # Session state helpers
-# ─────────────────────────────────────────────────────────────────────────────
+
 
 def _is_logged_in() -> bool:
     return st.session_state.get("auth_user") is not None
@@ -73,9 +57,8 @@ def _logout():
     st.rerun()
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # Login page
-# ─────────────────────────────────────────────────────────────────────────────
+
 
 def render_login():
     col_l, col_c, col_r = st.columns([2, 3, 2])
@@ -103,9 +86,9 @@ def render_login():
         st.info("Default accounts: **admin** / admin123 · **user** / user123")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+
 # Shared result display
-# ─────────────────────────────────────────────────────────────────────────────
+
 
 def _decision_badge(decision: str) -> str:
     if decision == "APPROVED":
@@ -200,14 +183,13 @@ def display_results(result: dict):
     st.caption(f"Run artifacts saved to: `{run_dir}`")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Main app (authenticated)
-# ─────────────────────────────────────────────────────────────────────────────
+# Main app 
+
 
 def render_app():
     user = _current_user()
 
-    # ── Top bar ──────────────────────────────────────────────────────────────
+    
     col_title, col_user, col_logout = st.columns([7, 2, 1])
     with col_title:
         role_badge = "🔑 Admin" if _is_admin() else "👤 User"
@@ -219,7 +201,7 @@ def render_app():
         if st.button("Logout"):
             _logout()
 
-    # ── Storage warning ──────────────────────────────────────────────────────
+    
     try:
         disk = get_runs_disk_usage()
         if disk["at_limit"]:
@@ -230,7 +212,7 @@ def render_app():
     except Exception:
         pass
 
-    # ── Tabs ─────────────────────────────────────────────────────────────────
+   
     admin_tabs = ["📋 Scenario Demo", "📝 Web Form", "📄 PDF Upload",
                   "🔍 Audit Dashboard", "⚙️ Admin Panel"]
     user_tabs  = ["📋 Scenario Demo", "📝 Web Form", "📄 PDF Upload",
@@ -245,7 +227,7 @@ def render_app():
     tab4 = tabs[3]
     tab_admin = tabs[4] if _is_admin() else None
 
-    # ── Tab 1: Scenario Demo ─────────────────────────────────────────────────
+    
     with tab1:
         st.header("Scenario Demo")
         st.info(
@@ -275,7 +257,7 @@ def render_app():
                     result = run_pipeline(pr, input_source="SCENARIO")
                 display_results(result)
 
-    # ── Tab 2: Web Form ───────────────────────────────────────────────────────
+    
     with tab2:
         st.header("Web Form Entry")
 
@@ -365,7 +347,7 @@ def render_app():
             )
 
         if st.button("▶ Run Web Form Pipeline", key="wf_run"):
-            # ── Input validation ──────────────────────────────────────────
+            
             errors = []
             if not pr_id.strip():
                 errors.append("PR ID cannot be empty.")
@@ -413,7 +395,7 @@ def render_app():
                     result = run_pipeline(pr, input_source="WEB_FORM")
                 display_results(result)
 
-    # ── Tab 3: PDF Upload ─────────────────────────────────────────────────────
+    
     with tab3:
         st.header("PDF Upload")
 
@@ -477,7 +459,7 @@ def render_app():
                                 pr = parse_requisition_pdf(tmp_path)
                             corrections = getattr(pr, "__dict__", {}).get("_ocr_corrections", [])
 
-                        # Show OCR corrections if any
+                        
                         if corrections:
                             with st.expander(f"🔧 OCR Auto-Corrections Applied ({len(corrections)})", expanded=True):
                                 for c in corrections:
@@ -496,7 +478,7 @@ def render_app():
                     finally:
                         import os; os.unlink(tmp_path)
 
-    # ── Tab 4: Audit Dashboard ────────────────────────────────────────────────
+    
     with tab4:
         st.header("🔍 Audit Dashboard")
         st.caption("Live audit data from SQLite database.")
@@ -566,7 +548,7 @@ def render_app():
                     ])
                     st.dataframe(df, use_container_width=True, hide_index=True)
 
-                    # ── Export individual run exceptions ──────────────────
+                    
                     st.download_button(
                         "⬇ Export Runs Table CSV",
                         data=runs_to_csv(recent_runs),
@@ -602,7 +584,7 @@ def render_app():
                         with c_actions:
                             st.markdown("**Actions**")
 
-                            # ── Re-run button ─────────────────────────────
+                            
                             if st.button("🔁 Re-run this PR", key=f"rerun_{selected_run_id}"):
                                 pr_data = get_pr_data_for_rerun(selected_run_id)
                                 if pr_data:
@@ -617,7 +599,7 @@ def render_app():
                                 else:
                                     st.warning("PR data not available for this run.")
 
-                            # ── Export exceptions ─────────────────────────
+                            
                             exc_detail = get_exceptions_for_run(selected_run_id)
                             if exc_detail:
                                 st.download_button(
@@ -640,7 +622,7 @@ def render_app():
             st.error(f"Audit database error: {e}")
             st.info("Run a scenario first to initialize the audit database.")
 
-    # ── Tab 5: Admin Panel (admin only) ──────────────────────────────────────
+    
     if tab_admin is not None:
         with tab_admin:
             st.header("⚙️ Admin Panel")
@@ -653,7 +635,7 @@ def render_app():
                 "🗑 Run Storage",
             ])
 
-            # ── User Management ───────────────────────────────────────────
+            
             with admin_tab_a:
                 st.subheader("User Management")
                 users = get_all_users()
@@ -715,7 +697,7 @@ def render_app():
                             st.success("User updated.")
                             st.rerun()
 
-            # ── Vendor Editor ─────────────────────────────────────────────
+            
             with admin_tab_b:
                 st.subheader("Edit Approved Vendors")
                 vendor_path = BASE_DIR / "data" / "sample_data" / "approved_vendors.csv"
@@ -741,7 +723,7 @@ def render_app():
                         mime="text/csv",
                     )
 
-            # ── Budget Editor ─────────────────────────────────────────────
+            
             with admin_tab_c:
                 st.subheader("Edit Budget Snapshot")
                 budget_path = BASE_DIR / "data" / "sample_data" / "budget_snapshot.csv"
@@ -767,7 +749,7 @@ def render_app():
                         mime="text/csv",
                     )
 
-            # ── Catalogue Editor ──────────────────────────────────────────
+            
             with admin_tab_d:
                 st.subheader("Edit Catalogue Pricing")
                 catalog_path = BASE_DIR / "data" / "sample_data" / "catalogue_pricing.csv"
@@ -793,7 +775,7 @@ def render_app():
                         mime="text/csv",
                     )
 
-            # ── Run Storage ───────────────────────────────────────────────
+            
             with admin_tab_e:
                 st.subheader("Run Storage Management")
                 try:
@@ -843,9 +825,8 @@ def render_app():
                 st.caption("Pass this header with all API requests to port 8000.")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Entry point
-# ─────────────────────────────────────────────────────────────────────────────
+
+
 
 if _is_logged_in():
     render_app()

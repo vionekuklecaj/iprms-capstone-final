@@ -1,10 +1,3 @@
-"""
-Runs Manager
-=============
-Handles auto-cleanup of the runs/ folder.
-Keeps only the last MAX_RUNS run folders (by creation time).
-The audit.db and auth.db files are preserved.
-"""
 
 from __future__ import annotations
 
@@ -18,10 +11,7 @@ PROTECTED_FILES = {"audit.db", "auth.db"}
 
 
 def cleanup_old_runs(max_runs: int = MAX_RUNS) -> dict:
-    """
-    Delete oldest run folders if total exceeds max_runs.
-    Returns info about what was cleaned up.
-    """
+    
     RUNS_DIR.mkdir(parents=True, exist_ok=True)
 
     run_folders = sorted(
@@ -47,7 +37,7 @@ def cleanup_old_runs(max_runs: int = MAX_RUNS) -> dict:
 
 
 def get_runs_disk_usage() -> dict:
-    """Return approximate disk usage of the runs folder."""
+    
     RUNS_DIR.mkdir(parents=True, exist_ok=True)
 
     total_bytes = 0

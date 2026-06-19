@@ -1,7 +1,3 @@
-"""
-CLI Demo — run a single PR JSON file through the LangGraph pipeline.
-Usage: python demo.py data/pr_bundles/pr_auto_approve.json
-"""
 
 import json
 import sys

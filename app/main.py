@@ -1,12 +1,3 @@
-"""
-IPRMS FastAPI Application
-==========================
-Routes now delegate to the LangGraph pipeline (app/pipeline.py),
-which orchestrates all agents via a typed StateGraph.
-
-API Authentication: Pass header  X-API-Key: <key>
-Default key is read from env var IPRMS_API_KEY (defaults to "iprms-dev-key").
-"""
 
 import os
 from fastapi import FastAPI, UploadFile, File, HTTPException, Depends, Header
@@ -55,13 +46,13 @@ def root():
 
 @app.post("/pipeline/run", dependencies=[Depends(_verify_api_key)])
 def run_pipeline_endpoint(pr: PurchaseRequisition):
-    """Run the full procurement pipeline for a JSON PR."""
+    
     return run_pipeline(pr, input_source="JSON")
 
 
 @app.post("/pipeline/run-pdf", dependencies=[Depends(_verify_api_key)])
 async def run_pipeline_pdf(file: UploadFile = File(...)):
-    """Run the pipeline from an uploaded PDF (digital or scanned, any layout)."""
+    
     from app.services.pdf_parser import parse_requisition_pdf_flexible
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
         tmp.write(await file.read())
@@ -78,7 +69,7 @@ async def run_pipeline_pdf(file: UploadFile = File(...)):
 
 @app.post("/pipeline/rerun/{run_id}", dependencies=[Depends(_verify_api_key)])
 def rerun_pipeline(run_id: str):
-    """Re-run a previously executed scenario by run_id."""
+    
     pr_data = get_pr_data_for_rerun(run_id)
     if not pr_data:
         raise HTTPException(status_code=404, detail="Run not found or PR data unavailable")
@@ -89,9 +80,7 @@ def rerun_pipeline(run_id: str):
     return run_pipeline(pr, input_source="RERUN")
 
 
-# ---------------------------------------------------------------------------
-# Audit endpoints
-# ---------------------------------------------------------------------------
+
 
 @app.get("/audit/runs", dependencies=[Depends(_verify_api_key)])
 def list_runs(limit: int = 20):
@@ -115,9 +104,7 @@ def audit_stats():
     }
 
 
-# ---------------------------------------------------------------------------
-# Export endpoints
-# ---------------------------------------------------------------------------
+
 
 @app.get("/export/runs.csv", dependencies=[Depends(_verify_api_key)])
 def export_runs_csv(limit: int = 200):

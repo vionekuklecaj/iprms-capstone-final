@@ -1,7 +1,3 @@
-"""
-Agent B  — Intelligent Item Extraction & Classification
-
-"""
 
 from __future__ import annotations
 
@@ -13,9 +9,7 @@ from app.schemas.purchase_requisition import PurchaseRequisition
 from app.schemas.context import RequestClassification
 
 
-# ---------------------------------------------------------------------------
-# Prompts
-# ---------------------------------------------------------------------------
+
 
 _SYSTEM_PROMPT = (
     "You are a procurement intake specialist. "
@@ -49,9 +43,7 @@ Return a JSON object with exactly these keys:
 - suggested_gl_account: string like "6100" or null
 """
 
-# ---------------------------------------------------------------------------
-# Fallback rule-based classification (identical to original IntakeAgent logic)
-# ---------------------------------------------------------------------------
+
 
 def _rule_based_classify(pr: PurchaseRequisition) -> dict:
     text = (
@@ -116,13 +108,7 @@ def _rule_based_classify(pr: PurchaseRequisition) -> dict:
 
 
 class PRClassificationAgent:
-    """
-    Agent B — Intelligent PR Classification
-
-    LLM-powered classification using LangChain + CrewAI.
-    Understands nuanced procurement scenarios beyond simple keyword matching.
-    Falls back to deterministic rules when no LLM is available.
-    """
+    
 
     def __init__(self):
         self._llm = None
@@ -144,7 +130,7 @@ class PRClassificationAgent:
                 temperature=0,
             )
 
-            # Agent role metadata (CrewAI-style, implemented via LangChain system prompt)
+            
             self._agent_role = {
                 "role": "Procurement Intake Specialist",
                 "goal": (
@@ -163,9 +149,7 @@ class PRClassificationAgent:
             self._crew_agent = None
 
     def classify(self, pr: PurchaseRequisition) -> dict:
-        """
-        Returns an enriched classification dict (superset of RequestClassification).
-        """
+        
         if self._llm is None:
             return _rule_based_classify(pr)
 
@@ -209,7 +193,7 @@ class PRClassificationAgent:
             return fallback
 
     def to_request_classification(self, pr: PurchaseRequisition) -> RequestClassification:
-        """Convenience wrapper returning a RequestClassification Pydantic model."""
+        
         result = self.classify(pr)
         return RequestClassification(
             request_type=result.get("request_type", "GENERAL_PURCHASE"),

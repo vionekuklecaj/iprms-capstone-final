@@ -2,11 +2,7 @@ from app.services.pdf_parser import parse_requisition_pdf_with_evidence
 
 
 class ExtractionAgent:
-    """
-    Agent B - Item Extraction
-
-    """
-
+    
     def run(self, file_path: str) -> dict:
         extraction = parse_requisition_pdf_with_evidence(file_path)
 

@@ -1,12 +1,3 @@
-"""
-Audit Database Service
-======================
-Replaces the flat audit_log.md files with a proper SQLite database
-backed by SQLAlchemy. Every agent step, pipeline run, and exception
-is persisted and queryable.
-
-Technology: SQLAlchemy (ORM) + SQLite
-"""
 
 from __future__ import annotations
 
@@ -56,7 +47,7 @@ class Base(DeclarativeBase):
 
 
 class PipelineRun(Base):
-    """One record per pipeline execution."""
+    
 
     __tablename__ = "pipeline_runs"
 
@@ -68,7 +59,7 @@ class PipelineRun(Base):
     completed_at = Column(DateTime)
     input_source = Column(String(64), default="JSON")  # JSON | PDF | WEB_FORM | OCR_PDF
 
-    # High-level outcomes
+    
     final_decision = Column(String(32))
     required_approver = Column(String(128))
     procurement_action = Column(String(64))
@@ -76,25 +67,25 @@ class PipelineRun(Base):
     exception_count = Column(Integer, default=0)
     anomaly_detected = Column(Boolean, default=False)
 
-    # Budget snapshot
+    
     total_amount = Column(Float)
     available_budget = Column(Float)
     budget_status = Column(String(32))
 
-    # Vendor
+    
     vendor_name = Column(String(128))
     vendor_status = Column(String(32))
 
-    # Compliance
+    
     compliance_status = Column(String(32))
 
-    # Raw JSON blobs for full replayability
-    exception_types_json = Column(Text)   # JSON array of exception type strings
+    
+    exception_types_json = Column(Text)   
     narrative_summary = Column(Text)
 
 
 class AgentStep(Base):
-    """One record per agent execution within a pipeline run."""
+    
 
     __tablename__ = "agent_steps"
 
@@ -102,16 +93,16 @@ class AgentStep(Base):
     run_id = Column(String(128), nullable=False, index=True)
     pr_id = Column(String(64), nullable=False, index=True)
     agent_name = Column(String(128), nullable=False)
-    agent_role = Column(String(64))          # e.g. INTAKE, BUDGET, VENDOR, ANOMALY, COMPLIANCE, ORCHESTRATOR
-    status = Column(String(32))              # COMPLETED | FAIL | REVIEW_REQUIRED | PASS
+    agent_role = Column(String(64))          
+    status = Column(String(32))              
     output_summary = Column(Text)
     executed_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     duration_ms = Column(Integer)
-    extra_json = Column(Text)                # Any extra structured data
+    extra_json = Column(Text)                
 
 
 class ExceptionRecord(Base):
-    """One record per compliance exception raised."""
+    
 
     __tablename__ = "exceptions"
 
@@ -127,7 +118,7 @@ class ExceptionRecord(Base):
     raised_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
 
-# Create all tables on import
+
 Base.metadata.create_all(_engine)
 
 
@@ -135,9 +126,7 @@ def get_session() -> Session:
     return _SessionLocal()
 
 
-# ---------------------------------------------------------------------------
-# Public write API
-# ---------------------------------------------------------------------------
+
 
 def log_pipeline_run(
     *,
@@ -151,7 +140,7 @@ def log_pipeline_run(
     final_result: dict,
     anomaly_result: dict | None = None,
 ) -> None:
-    """Persist a completed pipeline run to the audit DB."""
+    
 
     exception_types = [
         exc.get("type", "UNKNOWN")
@@ -187,7 +176,7 @@ def log_pipeline_run(
         )
         session.add(run)
 
-        # Agent steps
+        
         audit_steps = final_result.get("audit_log", {}).get("steps", [])
         for step in audit_steps:
             session.add(AgentStep(
@@ -198,7 +187,7 @@ def log_pipeline_run(
                 output_summary=step.get("output", ""),
             ))
 
-        # Exception records
+        
         for exc in compliance_result.get("exceptions", []):
             session.add(ExceptionRecord(
                 run_id=run_id,
@@ -224,7 +213,7 @@ def log_agent_step(
     duration_ms: int | None = None,
     extra: dict | None = None,
 ) -> None:
-    """Log an individual agent execution step."""
+    
     with get_session() as session:
         session.add(AgentStep(
             run_id=run_id,
@@ -239,12 +228,10 @@ def log_agent_step(
         session.commit()
 
 
-# ---------------------------------------------------------------------------
-# Public query API
-# ---------------------------------------------------------------------------
+
 
 def get_recent_runs(limit: int = 20) -> list[dict]:
-    """Return the most recent pipeline runs as plain dicts."""
+    
     with get_session() as session:
         rows = (
             session.query(PipelineRun)
@@ -279,7 +266,7 @@ def get_runs_for_pr(pr_id: str) -> list[dict]:
 
 
 def get_exception_summary() -> list[dict]:
-    """Aggregate exception counts by type across all runs."""
+    
     from sqlalchemy import func
     with get_session() as session:
         rows = (
@@ -299,7 +286,7 @@ def get_exception_summary() -> list[dict]:
 
 
 def get_audit_stats() -> dict[str, Any]:
-    """Return high-level statistics for the audit dashboard."""
+    
     from sqlalchemy import func
     with get_session() as session:
         total_runs = session.query(func.count(PipelineRun.id)).scalar() or 0
@@ -330,9 +317,7 @@ def get_audit_stats() -> dict[str, Any]:
         }
 
 
-# ---------------------------------------------------------------------------
-# Private helpers
-# ---------------------------------------------------------------------------
+
 
 def _run_to_dict(r: PipelineRun) -> dict:
     return {
@@ -372,11 +357,7 @@ def _exc_to_dict(r: ExceptionRecord) -> dict:
 
 
 def get_pr_data_for_rerun(run_id: str) -> Optional[dict]:
-    """
-    Load the extracted_pr.json from the run folder so the UI
-    can re-run the exact same scenario.
-    Returns the PR dict or None if not found.
-    """
+    
     import json
     run = get_run_by_id(run_id)
     if not run:

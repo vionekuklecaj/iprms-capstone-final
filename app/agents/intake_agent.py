@@ -13,10 +13,7 @@ from app.services.data_loader import (
 
 
 class IntakeAgent:
-    """
-    Agent A - Intake & Context
-
-    """
+    
 
     def run(self, pr: PurchaseRequisition) -> ContextPacket:
         gl_account = self.infer_gl_account(pr)

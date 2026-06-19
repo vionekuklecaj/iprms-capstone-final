@@ -1,12 +1,4 @@
-"""
-IPRMS Test Suite v2.0
-======================
-Tests for individual agents and the full LangGraph pipeline.
 
-Split-order tests now use the time-windowed AnomalyAgent correctly:
-- Clean PRs with no matching recent history → no anomaly
-- PRs that match multiple recent Dell/LAP-001/IT001 history rows → anomaly
-"""
 
 import json
 from pathlib import Path
@@ -23,9 +15,9 @@ from app.agents.orchestrator_agent import OrchestratorAgent
 from app.pipeline import run_pipeline
 
 
-# ---------------------------------------------------------------------------
+
 # Test fixtures
-# ---------------------------------------------------------------------------
+
 
 def build_pr(
     pr_id="PR-TEST-001",
@@ -56,7 +48,7 @@ def build_pr(
 
 
 def build_clean_pr(quantity=1):
-    """A PR that shares no history with any split-order seed data."""
+    
     return PurchaseRequisition(
         pr_id="PR-CLEAN-TEST-001",
         requestor_name="Test User",
@@ -76,9 +68,9 @@ def build_clean_pr(quantity=1):
     )
 
 
-# ---------------------------------------------------------------------------
+
 # Budget agent tests
-# ---------------------------------------------------------------------------
+
 
 def test_budget_passes_for_small_purchase():
     pr = build_pr(quantity=3)
@@ -96,9 +88,9 @@ def test_budget_fails_when_amount_exceeds_budget():
     assert result["requested_amount"] == 60000
 
 
-# ---------------------------------------------------------------------------
+
 # Vendor agent tests
-# ---------------------------------------------------------------------------
+
 
 def test_vendor_approved_is_detected():
     pr = build_pr(vendor_name="Dell Partner")
@@ -114,12 +106,12 @@ def test_vendor_not_approved_is_detected():
     assert result["vendor_status"] == "NOT_APPROVED"
 
 
-# ---------------------------------------------------------------------------
+
 # Anomaly agent tests
-# ---------------------------------------------------------------------------
+
 
 def test_clean_pr_does_not_trigger_split_order():
-    """A small HR keyboard purchase with no matching history → no anomaly."""
+   
     pr = build_clean_pr(quantity=1)
     context = IntakeAgent().run(pr)
     result = AnomalyAgent().run(context)
@@ -127,11 +119,7 @@ def test_clean_pr_does_not_trigger_split_order():
 
 
 def test_split_order_detected_with_dated_history():
-    """
-    A Dell/LAP-001/IT001 PR above threshold when combined with the 4 dated
-    seed history rows (PR-HIST-001..004, each 2500) should trigger anomaly.
-    Combined: 3600 + 4*2500 = 13600 > 10000 threshold.
-    """
+    
     pr = build_pr(quantity=3, unit_price=1200)  # total=3600
     context = IntakeAgent().run(pr)
     result = AnomalyAgent().run(context)
@@ -141,13 +129,8 @@ def test_split_order_detected_with_dated_history():
 
 
 def test_anomaly_agent_respects_lookback_window():
-    """
-    A PR matching an item that only has very old history should not trigger.
-    This tests that the lookback window is working — old undated CSV rows
-    (without created_date) are not included.
-    """
-    # Use an item/vendor that only exists in undated CSV rows (no created_date)
-    # In practice: verify the agent returns False when history has no timestamps
+   
+    
     pr = PurchaseRequisition(
         pr_id="PR-NO-HIST-001",
         requestor_name="Test",
@@ -169,12 +152,12 @@ def test_anomaly_agent_respects_lookback_window():
     assert result["anomaly_detected"] is False
 
 
-# ---------------------------------------------------------------------------
-# Full pipeline tests (via LangGraph)
-# ---------------------------------------------------------------------------
+
+# Full pipeline tests  LangGraph
+
 
 def test_pipeline_auto_approves_clean_hr_pr():
-    """Clean small HR supply purchase should auto-approve with no exceptions."""
+    
     pr = build_clean_pr(quantity=1)
     result = run_pipeline(pr, input_source="TEST")
     assert result["final_result"]["final_decision"] == "APPROVED"
@@ -200,10 +183,7 @@ def test_pipeline_detects_budget_exceeded():
 
 
 def test_pipeline_routes_split_order_to_procurement_compliance():
-    """
-    A Dell/LAP-001/IT001 PR with 4 recent seed history matches should
-    be routed to Procurement Compliance for split-order review.
-    """
+    
     pr = build_pr(quantity=3, unit_price=1200)
     result = run_pipeline(pr, input_source="TEST")
     assert result["final_result"]["final_decision"] == "REVIEW_REQUIRED"
@@ -222,7 +202,7 @@ def test_pipeline_generates_po_draft_when_approved():
 
 
 def test_pipeline_results_contain_vendor_risk():
-    """Agent F (Vendor Risk) should always return a result."""
+    
     pr = build_clean_pr()
     result = run_pipeline(pr, input_source="TEST")
     vr = result.get("vendor_risk", {})
@@ -232,7 +212,7 @@ def test_pipeline_results_contain_vendor_risk():
 
 
 def test_pipeline_audit_db_populated():
-    """Running a pipeline should write an entry to the audit database."""
+    
     from app.services.audit_db import get_runs_for_pr
     pr = build_clean_pr()
     pr_with_unique_id = pr.model_copy(update={"pr_id": "PR-AUDIT-TEST-999"})
@@ -242,9 +222,9 @@ def test_pipeline_audit_db_populated():
     assert runs[0]["final_decision"] == "APPROVED"
 
 
-# ---------------------------------------------------------------------------
+
 # Scenario bundle tests
-# ---------------------------------------------------------------------------
+
 
 BUNDLE_DIR = Path("data/pr_bundles")
 
@@ -271,7 +251,7 @@ BUNDLE_DIR = Path("data/pr_bundles")
     ("pr_sole_source_missing_justification.json", "REVIEW_REQUIRED"),
 ])
 def test_bundle_scenario_decision(filename, expected_decision):
-    """Parametrized test: each scenario file should produce the expected decision."""
+    
     filepath = BUNDLE_DIR / filename
     if not filepath.exists():
         pytest.skip(f"Scenario file not found: {filename}")

@@ -1,12 +1,3 @@
-"""
-PDF Parser with OCR Support
-============================
-Handles both born-digital PDFs (via PyMuPDF) and scanned/image PDFs
-(via pytesseract + PyMuPDF). Automatically detects which path to use
-based on text yield from the digital extraction attempt.
-
-Technologies: PyMuPDF (fitz), pytesseract, Pillow — no Poppler required
-"""
 
 from __future__ import annotations
 
@@ -18,7 +9,7 @@ from typing import Optional
 import fitz  # PyMuPDF
 from app.schemas.purchase_requisition import PurchaseRequisition, PRLineItem
 
-# Windows: tell pytesseract where tesseract.exe lives
+
 try:
     import pytesseract
     pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
@@ -26,18 +17,14 @@ except ImportError:
     pass
 
 
-# ---------------------------------------------------------------------------
-# Minimum characters on a page before we consider it "digital" (not scanned)
-# ---------------------------------------------------------------------------
+
 _DIGITAL_TEXT_THRESHOLD = 50
 
 
-# ---------------------------------------------------------------------------
-# Low-level text extraction
-# ---------------------------------------------------------------------------
+
 
 def _extract_text_digital(file_path: str) -> str:
-    """Extract text from a born-digital PDF using PyMuPDF."""
+    
     doc = fitz.open(file_path)
     text = ""
     for page in doc:
@@ -47,11 +34,7 @@ def _extract_text_digital(file_path: str) -> str:
 
 
 def _extract_text_ocr(file_path: str) -> str:
-    """
-    Extract text from a scanned/image PDF using PyMuPDF (page → image)
-    + pytesseract. No Poppler or pdf2image required — PyMuPDF handles
-    the rendering natively on all platforms including Windows.
-    """
+    
     try:
         import pytesseract
         from PIL import Image
@@ -74,12 +57,7 @@ def _extract_text_ocr(file_path: str) -> str:
 
 
 def extract_text_from_pdf(file_path: str) -> tuple[str, str]:
-    """
-    Smart extraction: tries digital first, falls back to OCR if text yield
-    is too low (indicating a scanned document).
-
-    Returns (text, method) where method is "digital" or "ocr".
-    """
+    
     digital_text = _extract_text_digital(file_path)
     meaningful_chars = len(re.sub(r"\s+", "", digital_text))
 
@@ -93,9 +71,7 @@ def extract_text_from_pdf(file_path: str) -> tuple[str, str]:
     return digital_text or ocr_text, "digital_fallback"
 
 
-# ---------------------------------------------------------------------------
-# Field extraction helpers
-# ---------------------------------------------------------------------------
+
 
 def _get_value(text: str, field_name: str, default: Optional[str] = None) -> str:
     pattern = re.compile(
@@ -118,7 +94,7 @@ def _get_value_optional(text: str, field_name: str) -> Optional[str]:
 
 
 def extract_field_evidence(file_path: str, field_values: dict) -> list[dict]:
-    """Build bounding-box evidence for fields found in a digital PDF."""
+    
     doc = fitz.open(file_path)
     evidence = []
     for page_index, page in enumerate(doc):
@@ -143,9 +119,7 @@ def extract_field_evidence(file_path: str, field_values: dict) -> list[dict]:
     return evidence
 
 
-# ---------------------------------------------------------------------------
-# Line item parsing
-# ---------------------------------------------------------------------------
+
 
 def parse_line_items(text: str) -> list[PRLineItem]:
     lines = text.splitlines()
@@ -208,9 +182,7 @@ def parse_line_items(text: str) -> list[PRLineItem]:
         ]
 
 
-# ---------------------------------------------------------------------------
-# Public parse API
-# ---------------------------------------------------------------------------
+
 
 def parse_requisition_pdf(file_path: str) -> PurchaseRequisition:
     text, method = extract_text_from_pdf(file_path)
@@ -285,15 +257,10 @@ def parse_requisition_pdf_with_evidence(file_path: str) -> dict:
     }
 
 
-# ---------------------------------------------------------------------------
-# LLM-powered flexible extraction (any PDF layout)
-# ---------------------------------------------------------------------------
+
 
 def parse_requisition_pdf_flexible(file_path: str) -> tuple["PurchaseRequisition", dict]:
-    """
-    LLM-powered extraction — works on any PDF layout, not just
-    'Field Name: value' formatted documents.
-    """
+   
     text, method = extract_text_from_pdf(file_path)
 
     if not text.strip():

@@ -3,11 +3,7 @@ from app.services.summary_writer import generate_review_summary
 
 
 class OrchestratorAgent:
-    """
-    Agent H - Lead Orchestrator
-
-    """
-
+    
     def run(
         self,
         context: ContextPacket,
@@ -171,19 +167,7 @@ class OrchestratorAgent:
         context: ContextPacket,
         prioritized_exceptions: list[dict]
     ) -> list[dict]:
-        """
-        Converts policy exceptions into a standardized finding schema.
-
-        Each finding includes:
-        - finding identifier
-        - category
-        - severity
-        - confidence
-        - rule reference
-        - evidence links
-        - justification requirement
-        - approval escalation path
-        """
+        
 
         standardized_findings = []
 
@@ -239,9 +223,7 @@ class OrchestratorAgent:
 
 
     def _build_recommendation(self, exception: dict) -> str:
-        """
-        Builds a human-review recommendation for each finding.
-        """
+        
 
         exception_type = exception.get("type")
 
@@ -271,9 +253,7 @@ class OrchestratorAgent:
         )
 
     def _build_open_questions(self, exception: dict) -> list[str]:
-        """
-        Lists open questions that a human reviewer should resolve.
-        """
+        
 
         exception_type = exception.get("type")
 
@@ -355,9 +335,7 @@ class OrchestratorAgent:
 
 
     def _determine_evidence_status(self, evidence_links: list[dict]) -> str:
-        """
-        Confirms whether a finding has mandatory evidence pointers.
-        """
+        
 
         if not evidence_links:
             return "MISSING"
@@ -368,10 +346,7 @@ class OrchestratorAgent:
         return "LINKED"       
 
     def _calculate_finding_confidence(self, exception: dict) -> float:
-        """
-        Assigns a prototype confidence score to each finding.
-        Rule-based findings have high confidence. Data-quality findings are lower.
-        """
+        
 
         exception_type = exception.get("type")
 
@@ -417,9 +392,7 @@ class OrchestratorAgent:
         exception: dict,
         evidence_index: list
     ) -> list[dict]:
-        """
-        Links findings back to available evidence pointers from the context packet.
-        """
+        
 
         exception_type = exception.get("type", "")
 
@@ -473,9 +446,7 @@ class OrchestratorAgent:
 
 
     def _deduplicate_exceptions(self, exceptions: list[dict]) -> list[dict]:
-        """
-        Removes duplicate exception types while preserving the most severe version.
-        """
+        
 
         severity_rank = {
             "HIGH": 3,
@@ -500,9 +471,7 @@ class OrchestratorAgent:
         return list(deduplicated.values())
 
     def _prioritize_exceptions(self, exceptions: list[dict]) -> list[dict]:
-        """
-        Sorts exceptions by severity and then by business-critical category.
-        """
+        
 
         severity_rank = {
             "HIGH": 1,
@@ -529,9 +498,7 @@ class OrchestratorAgent:
         )
 
     def _categorize_exceptions(self, exceptions: list[dict]) -> dict:
-        """
-        Groups exceptions into actionable procurement categories.
-        """
+        
 
         categories = {}
 
@@ -547,9 +514,7 @@ class OrchestratorAgent:
         return categories
 
     def _get_exception_category(self, exception_type: str | None) -> str:
-        """
-        Maps exception types to actionable processing categories.
-        """
+        
 
         finance_exceptions = {
             "BUDGET_EXCEEDED",
@@ -597,9 +562,7 @@ class OrchestratorAgent:
         return "GENERAL"
 
     def _determine_overall_priority(self, exceptions: list[dict]) -> str:
-        """
-        Determines overall case priority from prioritized findings.
-        """
+        
 
         severities = {
             exception.get("severity", "LOW")
@@ -620,9 +583,7 @@ class OrchestratorAgent:
         final_decision: str,
         prioritized_exceptions: list[dict]
     ) -> str:
-        """
-        Determines the next procurement processing action.
-        """
+        
 
         exception_types = {
             exception.get("type")
@@ -672,9 +633,7 @@ class OrchestratorAgent:
         return "ROUTE_FOR_MANUAL_REVIEW"
 
     def _extract_follow_up_actions(self, exceptions: list[dict]) -> list[str]:
-        """
-        Extracts actionable follow-up steps from findings.
-        """
+        
 
         follow_up_actions = []
 
@@ -691,9 +650,7 @@ class OrchestratorAgent:
         exceptions: list[dict],
         fallback_approver: str
     ) -> list[str]:
-        """
-        Extracts approval escalation paths from findings.
-        """
+        
 
         escalation_paths = []
 

@@ -3,10 +3,7 @@ from app.services.data_loader import load_policy
 
 
 class VendorAgent:
-    """
-    Agent D - Vendor Matching
-
-    """
+    
 
     def run(self, context: ContextPacket) -> dict:
         policy = load_policy()

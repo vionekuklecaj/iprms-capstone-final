@@ -1,8 +1,3 @@
-"""
-Export Service
-==============
-Generates CSV and Excel exports from audit dashboard data.
-"""
 
 from __future__ import annotations
 
@@ -12,7 +7,7 @@ from datetime import datetime, timezone
 
 
 def runs_to_csv(runs: list[dict]) -> bytes:
-    """Convert list of run dicts to CSV bytes."""
+    
     if not runs:
         return b"No data\n"
 
@@ -34,7 +29,7 @@ def runs_to_csv(runs: list[dict]) -> bytes:
 
 
 def exceptions_to_csv(exceptions: list[dict]) -> bytes:
-    """Convert exceptions list to CSV bytes."""
+    
     if not exceptions:
         return b"No exceptions\n"
 
@@ -53,7 +48,7 @@ def exceptions_to_csv(exceptions: list[dict]) -> bytes:
 
 
 def audit_stats_to_csv(stats: dict, exception_summary: list[dict]) -> bytes:
-    """Export audit stats + exception summary as CSV."""
+    
     buf = io.StringIO()
 
     buf.write("IPRMS Audit Statistics Export\n")

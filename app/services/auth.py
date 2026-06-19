@@ -1,13 +1,3 @@
-"""
-Authentication Service
-======================
-Simple but secure auth system for IPRMS with two roles:
-- user: can run scenarios, view history, download exports
-- admin: all user permissions plus edit master data, manage users
-
-Uses bcrypt for password hashing + JWT tokens stored in session state.
-SQLite-backed user store.
-"""
 
 from __future__ import annotations
 
@@ -63,9 +53,6 @@ class User(AuthBase):
 AuthBase.metadata.create_all(_auth_engine)
 
 
-# ---------------------------------------------------------------------------
-# Password hashing — simple SHA-256 + salt (no external bcrypt dependency)
-# ---------------------------------------------------------------------------
 
 def _hash_password(password: str, salt: Optional[str] = None) -> tuple[str, str]:
     if salt is None:
@@ -75,7 +62,7 @@ def _hash_password(password: str, salt: Optional[str] = None) -> tuple[str, str]
 
 
 def _verify_password(password: str, stored_hash: str) -> bool:
-    """stored_hash is 'hash:salt'"""
+    
     try:
         h, salt = stored_hash.split(":", 1)
         candidate, _ = _hash_password(password, salt)
@@ -89,9 +76,7 @@ def _make_hash(password: str) -> str:
     return f"{h}:{salt}"
 
 
-# ---------------------------------------------------------------------------
-# Seed default users if none exist
-# ---------------------------------------------------------------------------
+
 
 def _seed_default_users():
     with _AuthSession() as session:
@@ -116,15 +101,10 @@ def _seed_default_users():
 _seed_default_users()
 
 
-# ---------------------------------------------------------------------------
-# Public API
-# ---------------------------------------------------------------------------
+
 
 def authenticate(username: str, password: str) -> Optional[dict]:
-    """
-    Verify credentials. Returns user dict on success, None on failure.
-    Updates last_login on success.
-    """
+    
     with _AuthSession() as session:
         user = session.query(User).filter_by(username=username, is_active=True).first()
         if user is None:

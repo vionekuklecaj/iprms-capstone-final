@@ -1,7 +1,3 @@
-"""
-CLI Demo — run a PR bundle (folder with manifest.yaml) through the pipeline.
-Usage: python demo_bundle.py data/pr_bundles/bundle_auto_approve
-"""
 
 import json
 import sys

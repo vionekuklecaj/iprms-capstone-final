@@ -1,17 +1,3 @@
-"""
-LangGraph Pipeline
-===================
-Implements the IPRMS multi-agent pipeline as a LangGraph StateGraph.
-
-Instead of calling agents sequentially in procedural code, LangGraph
-manages the state machine explicitly. Benefits:
-- State is typed and passed cleanly between nodes (no shared mutation)
-- Each node is independently testable
-- The graph is visualizable and auditable
-- Conditional edges make routing logic declarative
-
-Technology: LangGraph (StateGraph, TypedDict state)
-"""
 
 from __future__ import annotations
 
@@ -32,19 +18,14 @@ from app.agents.pr_classification_agent import PRClassificationAgent
 from app.services.artifact_writer import save_run_artifacts
 
 
-# ---------------------------------------------------------------------------
-# Pipeline State
-# ---------------------------------------------------------------------------
+
 
 class PipelineState(TypedDict):
-    """
-    Typed state shared across all pipeline nodes.
-    Each node reads what it needs and writes its output key.
-    """
+    
     pr: PurchaseRequisition
     input_source: str
 
-    # Agent outputs — populated progressively as graph executes
+    
     context_packet: Optional[ContextPacket]
     classification_result: Optional[dict]
     budget_result: Optional[dict]
@@ -55,26 +36,24 @@ class PipelineState(TypedDict):
     final_result: Optional[dict]
     run_artifacts: Optional[dict]
 
-    # Error tracking
+    
     errors: list[str]
 
 
-# ---------------------------------------------------------------------------
-# Node functions
-# ---------------------------------------------------------------------------
+
 
 def node_intake(state: PipelineState) -> PipelineState:
-    """Agent A — Intake & Context: load PR data and build context packet."""
+    
     try:
-        # Use LLM-powered classification agent if available
+        
         classification_agent = PRClassificationAgent()
         classification_detail = classification_agent.classify(state["pr"])
 
-        # Build context packet via IntakeAgent (data loading)
+        
         intake = IntakeAgent()
         ctx = intake.run(state["pr"])
 
-        # Override classification with enriched LLM result if available
+        
         if classification_detail.get("assessment_method") == "llm_langchain":
             from app.schemas.context import RequestClassification
             ctx = ctx.model_copy(update={
@@ -96,7 +75,7 @@ def node_intake(state: PipelineState) -> PipelineState:
 
 
 def node_budget(state: PipelineState) -> PipelineState:
-    """Agent C — Budget Validation."""
+    
     try:
         result = BudgetAgent().run(state["context_packet"])
         return {**state, "budget_result": result}
@@ -105,7 +84,7 @@ def node_budget(state: PipelineState) -> PipelineState:
 
 
 def node_vendor(state: PipelineState) -> PipelineState:
-    """Agent D — Vendor Matching."""
+    
     try:
         result = VendorAgent().run(state["context_packet"])
         return {**state, "vendor_result": result}
@@ -114,7 +93,7 @@ def node_vendor(state: PipelineState) -> PipelineState:
 
 
 def node_vendor_risk(state: PipelineState) -> PipelineState:
-    """Agent F — Vendor Risk Analysis (LLM-powered)."""
+    
     try:
         result = VendorRiskAgent().run(state["context_packet"], state["vendor_result"])
         return {**state, "vendor_risk_result": result}
@@ -127,7 +106,7 @@ def node_vendor_risk(state: PipelineState) -> PipelineState:
 
 
 def node_anomaly(state: PipelineState) -> PipelineState:
-    """Split Order Anomaly Detection Agent."""
+    
     try:
         result = AnomalyAgent().run(state["context_packet"])
         return {**state, "anomaly_result": result}
@@ -140,7 +119,7 @@ def node_anomaly(state: PipelineState) -> PipelineState:
 
 
 def node_compliance(state: PipelineState) -> PipelineState:
-    """Agent E — Compliance & Policy Engine."""
+    
     try:
         result = ComplianceAgent().run(
             state["context_packet"],
@@ -154,7 +133,7 @@ def node_compliance(state: PipelineState) -> PipelineState:
 
 
 def node_orchestrate(state: PipelineState) -> PipelineState:
-    """Agent H — Lead Orchestration, exception triage, PO draft."""
+    
     try:
         result = OrchestratorAgent().run(
             state["context_packet"],
@@ -163,11 +142,11 @@ def node_orchestrate(state: PipelineState) -> PipelineState:
             state["compliance_result"],
         )
 
-        # Inject vendor risk result into audit log
+        
         if state.get("vendor_risk_result"):
             result["vendor_risk_assessment"] = state["vendor_risk_result"]
 
-        # Inject LLM classification details
+        
         if state.get("classification_result"):
             result["classification_detail"] = state["classification_result"]
 
@@ -177,7 +156,7 @@ def node_orchestrate(state: PipelineState) -> PipelineState:
 
 
 def node_save_artifacts(state: PipelineState) -> PipelineState:
-    """Persist run artifacts to disk and audit database."""
+    
     try:
         pr = state["pr"]
         ctx = state["context_packet"]
@@ -197,31 +176,22 @@ def node_save_artifacts(state: PipelineState) -> PipelineState:
         return {**state, "errors": state.get("errors", []) + [f"artifacts: {e}"]}
 
 
-# ---------------------------------------------------------------------------
-# Conditional edges
-# ---------------------------------------------------------------------------
+
 
 def should_continue_after_intake(state: PipelineState) -> str:
-    """Abort early if intake failed catastrophically."""
+    
     if state.get("context_packet") is None:
         return "end"
     return "budget"
 
 
-# ---------------------------------------------------------------------------
-# Graph construction
-# ---------------------------------------------------------------------------
+
 
 def build_pipeline_graph() -> StateGraph:
-    """
-    Builds and compiles the LangGraph pipeline.
-
-    Graph topology:
-      intake → budget → vendor → vendor_risk → anomaly → compliance → orchestrate → save_artifacts → END
-    """
+    
     graph = StateGraph(PipelineState)
 
-    # Add nodes
+    
     graph.add_node("intake", node_intake)
     graph.add_node("budget", node_budget)
     graph.add_node("vendor", node_vendor)
@@ -231,10 +201,10 @@ def build_pipeline_graph() -> StateGraph:
     graph.add_node("orchestrate", node_orchestrate)
     graph.add_node("save_artifacts", node_save_artifacts)
 
-    # Entry point
+    
     graph.set_entry_point("intake")
 
-    # Edges
+    
     graph.add_conditional_edges(
         "intake",
         should_continue_after_intake,
@@ -251,9 +221,7 @@ def build_pipeline_graph() -> StateGraph:
     return graph.compile()
 
 
-# ---------------------------------------------------------------------------
-# Public run function
-# ---------------------------------------------------------------------------
+
 
 _graph = None
 
@@ -266,11 +234,7 @@ def get_pipeline():
 
 
 def run_pipeline(pr: PurchaseRequisition, input_source: str = "JSON") -> dict:
-    """
-    Run the full IPRMS pipeline via LangGraph.
-
-    Returns a flat result dict compatible with the existing API and UI.
-    """
+    
     pipeline = get_pipeline()
 
     initial_state: PipelineState = {

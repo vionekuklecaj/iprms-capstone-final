@@ -1,8 +1,3 @@
-"""
-Agent F — Vendor Risk Analysis
-
-"""
-
 from __future__ import annotations
 
 import json
@@ -12,9 +7,7 @@ from typing import Optional
 from app.schemas.context import ContextPacket
 
 
-# ---------------------------------------------------------------------------
-# Prompt template
-# ---------------------------------------------------------------------------
+
 
 _SYSTEM_PROMPT = (
     "You are a procurement vendor risk analyst. "
@@ -71,13 +64,13 @@ def _build_prompt_data(context: ContextPacket, vendor_result: dict) -> dict:
 
 
 def _rule_based_risk(vendor_result: dict, total_amount: float) -> dict:
-    """Deterministic fallback when no LLM is available."""
+    
     vendor_risk = vendor_result.get("vendor_risk", "LOW")
     vendor_status = vendor_result.get("vendor_status", "UNKNOWN")
     price_issues = vendor_result.get("price_tolerance_issues", [])
     preferred_issues = vendor_result.get("preferred_vendor_issues", [])
 
-    score = 2  # baseline
+    score = 2  
 
     if vendor_status not in ("APPROVED",):
         score += 4
@@ -124,13 +117,7 @@ def _rule_based_risk(vendor_result: dict, total_amount: float) -> dict:
 
 
 class VendorRiskAgent:
-    """
-    Agent F — Vendor Risk Analyst
-
-    LLM-powered vendor risk assessment using LangChain prompt chains.
-    CrewAI is used to define the agent's role and backstory, giving it
-    a consistent persona and bounded scope.
-    """
+    
 
     def __init__(self):
         self._llm = None
@@ -138,7 +125,7 @@ class VendorRiskAgent:
         self._setup()
 
     def _setup(self):
-        """Initialize LangChain LLM and CrewAI agent if API key available."""
+        
         api_key = os.environ.get("ANTHROPIC_API_KEY")
         if not api_key:
             return
@@ -153,7 +140,7 @@ class VendorRiskAgent:
                 temperature=0,
             )
 
-            # Agent role metadata (CrewAI-style, implemented via LangChain system prompt)
+            
             self._agent_role = {
                 "role": "Vendor Risk Analyst",
                 "goal": (

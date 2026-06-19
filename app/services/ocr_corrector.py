@@ -1,14 +1,3 @@
-"""
-OCR Post-Correction Service
-=============================
-After OCR runs on a scanned PDF, common field values are validated
-against known master data and obvious OCR mistakes are auto-corrected.
-
-Examples of corrections:
-  ITOQQ1 → IT001   (cost center)
-  De1l Partner → Dell Partner  (vendor name)
-  0PEX → OPEX     (spend type)
-"""
 
 from __future__ import annotations
 
@@ -17,9 +6,6 @@ from difflib import get_close_matches
 from typing import Optional
 
 
-# ---------------------------------------------------------------------------
-# Correction rules
-# ---------------------------------------------------------------------------
 
 KNOWN_COST_CENTERS = ["IT001", "HR001", "FIN001", "OPS001", "ENG001"]
 KNOWN_SPEND_TYPES = ["OPEX", "CAPEX"]
@@ -29,18 +15,18 @@ KNOWN_PROCUREMENT_TYPES = [
 ]
 KNOWN_DEPARTMENTS = ["IT", "HR", "Finance", "Operations", "Engineering"]
 
-# Character-level OCR confusion map (common misreadings)
+
 _CHAR_FIXES = {
-    "0": "O",  # zero → O (and back) handled contextually
+    "0": "O",  
     "1": "I",
     "l": "I",
     "|": "I",
-    "Q": "O",  # Q read as O or vice versa
+    "Q": "O",  
 }
 
 
 def _normalize_ocr_token(token: str) -> str:
-    """Apply character-level fixes to a token."""
+    
     result = list(token)
     for i, ch in enumerate(result):
         if ch in _CHAR_FIXES:
@@ -49,26 +35,23 @@ def _normalize_ocr_token(token: str) -> str:
 
 
 def _best_match(value: str, candidates: list[str], cutoff: float = 0.6) -> Optional[str]:
-    """
-    Find best fuzzy match among candidates.
-    First tries normalized token, then direct match.
-    """
+    
     if not value:
         return None
 
-    # Exact match (case-insensitive)
+    
     upper = value.upper().strip()
     for c in candidates:
         if c.upper() == upper:
             return c
 
-    # After char normalization
+    
     normalized = _normalize_ocr_token(upper)
     for c in candidates:
         if c.upper() == normalized:
             return c
 
-    # Fuzzy match
+    
     matches = get_close_matches(upper, [c.upper() for c in candidates], n=1, cutoff=cutoff)
     if matches:
         idx = [c.upper() for c in candidates].index(matches[0])
@@ -115,42 +98,39 @@ def correct_vendor_name(raw: str, known_vendors: list[str]) -> tuple[str, bool]:
 
 
 def apply_ocr_corrections(pr_data: dict, known_vendors: list[str]) -> tuple[dict, list[str]]:
-    """
-    Apply all OCR corrections to a PR dict in-place.
-    Returns (corrected_pr_dict, list_of_correction_messages).
-    """
+    
     corrections = []
     pr = dict(pr_data)
 
-    # Cost center
+    
     if "cost_center" in pr:
         corrected, changed = correct_cost_center(pr["cost_center"])
         if changed:
             corrections.append(f"cost_center: '{pr['cost_center']}' → '{corrected}'")
             pr["cost_center"] = corrected
 
-    # Spend type
+    
     if "spend_type" in pr:
         corrected, changed = correct_spend_type(pr["spend_type"])
         if changed:
             corrections.append(f"spend_type: '{pr['spend_type']}' → '{corrected}'")
             pr["spend_type"] = corrected
 
-    # Procurement type
+    
     if "procurement_type" in pr:
         corrected, changed = correct_procurement_type(pr["procurement_type"])
         if changed:
             corrections.append(f"procurement_type: '{pr['procurement_type']}' → '{corrected}'")
             pr["procurement_type"] = corrected
 
-    # Vendor name
+    
     if "vendor_name" in pr and pr["vendor_name"]:
         corrected, changed = correct_vendor_name(pr["vendor_name"], known_vendors)
         if changed:
             corrections.append(f"vendor_name: '{pr['vendor_name']}' → '{corrected}'")
             pr["vendor_name"] = corrected
 
-    # Item IDs in line items
+    
     if "line_items" in pr:
         for i, item in enumerate(pr["line_items"]):
             if "item_id" in item and item["item_id"]:

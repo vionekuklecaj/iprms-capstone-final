@@ -1,7 +1,4 @@
-"""
-CLI Demo — run a PDF (digital or scanned) through the pipeline.
-Usage: python demo_pdf.py data/pr_bundles/pr_sample.pdf
-"""
+
 
 import sys
 from pathlib import Path

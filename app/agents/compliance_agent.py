@@ -3,19 +3,10 @@ from app.services.data_loader import load_policy
 
 
 class ComplianceAgent:
-    """
-    Agent E - Compliance & Policy Engine
-
-    """
+    
 
     def enrich_exception_findings(self, exceptions: list[dict], required_approver: str) -> list[dict]:
-        """
-        Adds detailed policy finding metadata to every compliance exception:
-        - rule reference
-        - justification requirement
-        - required evidence / justification
-        - approval escalation path
-        """
+        
 
         rule_catalog = {
             "BUDGET_EXCEEDED": {
@@ -146,11 +137,7 @@ class ComplianceAgent:
         return enriched_exceptions
 
     def _resolve_regional_policy(self, policy: dict, context) -> tuple:
-        """
-        Resolves region (from the cost-center authority) to its regional policy
-        block in policy.yaml. Returns (region_name, regional_policy_dict_or_None).
-        Matching is case-insensitive; unknown/missing regions fall back to global.
-        """
+        
         regional_policies = policy.get("regional_policies", {})
 
         region = None
